@@ -86,12 +86,4 @@ npm run dev
 ```
 *The frontend application will be available at `http://localhost:5173`.*
 
-
-
-## Team
-
-*   **Dounia Rehab** - Backend Development & Project Lead
-*   **Douniazed Daouadji** - Frontend Development
-*   **Imad Karroum** - Report Writing & Conceptual Modeling
-
 ---

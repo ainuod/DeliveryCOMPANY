@@ -63,8 +63,10 @@ const IncidentCreate = () => {
       });
       navigate('/shipments'); // Redirect to shipments after success
     } catch (error) {
-      console.error(error);
-      alert("Error reporting incident. Check file size and fields.");
+      console.error('Incident creation error:', error);
+      console.error('Error response:', error.response?.data);
+      const errorMsg = error.response?.data ? JSON.stringify(error.response.data) : 'Unknown error';
+      alert(`Error reporting incident: ${errorMsg}`);
     } finally {
       setLoading(false);
     }

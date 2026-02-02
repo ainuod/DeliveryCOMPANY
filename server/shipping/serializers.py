@@ -37,7 +37,7 @@ class ShipmentSerializer(serializers.ModelSerializer):
             'id', 'client', 'origin', 'destination', 'origin_detail', 'destination_detail', 'tour', 'status', 'total_cost',
             'created_at', 'parcels', 'client_id', 'service_type'
         ]
-        read_only_fields = ['tour', 'total_cost', 'status']
+        read_only_fields = ['tour', 'total_cost']
 
     def create(self, validated_data):
         parcels_data = validated_data.pop('parcels')

@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
-import { Package, MapPin, Calendar, ArrowLeft, CheckCircle2, Circle } from 'lucide-react';
+import { Package, MapPin, ArrowLeft, CheckCircle2, Circle, Truck, CheckCircle } from 'lucide-react';
 
 const ShipmentDetail = () => {
   const { id } = useParams();
+  const { user } = useAuth();
   const [shipment, setShipment] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -22,8 +25,25 @@ const ShipmentDetail = () => {
     fetchDetail();
   }, [id]);
 
+  const updateStatus = async (newStatus) => {
+    setUpdating(true);
+    try {
+      const response = await api.patch(`/api/shipments/${id}/`, { status: newStatus });
+      setShipment(response.data);
+      alert(`Shipment status updated to ${newStatus}`);
+    } catch (error) {
+      console.error('Error updating status:', error);
+      alert('Failed to update shipment status');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   if (loading) return <div className="p-8 text-[#004d40]">Loading Shipment Details...</div>;
   if (!shipment) return <div className="p-8">Shipment not found.</div>;
+
+  const isDriver = user?.role === 'DRIVER';
+  const canUpdateStatus = isDriver && shipment.status !== 'DELIVERED' && shipment.status !== 'CANCELLED';
 
   return (
     <div className="space-y-6">
@@ -48,14 +68,14 @@ const ShipmentDetail = () => {
               <MapPin className="text-red-500 mt-1" size={20} />
               <div>
                 <p className="text-xs text-slate-400 uppercase font-bold tracking-wider">Origin</p>
-                <p className="font-semibold text-slate-800">{shipment.origin?.city}, {shipment.origin?.country}</p>
+                <p className="text-lg font-bold text-slate-800">{shipment.origin_detail?.city}, {shipment.origin_detail?.country}</p>
               </div>
             </div>
-            <div className="flex-1 border-t-2 border-dashed border-slate-200 mx-8"></div>
-            <div className="flex items-start space-x-3 text-right">
-              <div>
+            <div className="text-slate-300 text-2xl">→</div>
+            <div className="flex items-start space-x-3">
+              <div className="text-right">
                 <p className="text-xs text-slate-400 uppercase font-bold tracking-wider">Destination</p>
-                <p className="font-semibold text-slate-800">{shipment.destination?.city}, {shipment.destination?.country}</p>
+                <p className="text-lg font-bold text-slate-800">{shipment.destination_detail?.city}, {shipment.destination_detail?.country}</p>
               </div>
               <MapPin className="text-[#004d40] mt-1" size={20} />
             </div>
@@ -114,6 +134,35 @@ const ShipmentDetail = () => {
               {/* Vertical Line Connector */}
               <div className="absolute left-[9px] top-5 w-[2px] h-12 bg-slate-100 -z-0"></div>
             </div>
+
+            {/* Driver Status Update Buttons */}
+            {canUpdateStatus && (
+              <div className="mt-6 pt-6 border-t border-slate-100 space-y-3">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Update Status</p>
+
+                {shipment.status === 'PENDING' && (
+                  <button
+                    onClick={() => updateStatus('IN_TRANSIT')}
+                    disabled={updating}
+                    className="w-full bg-amber-500 text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-amber-600 transition disabled:opacity-50"
+                  >
+                    <Truck size={18} />
+                    Mark as In Transit
+                  </button>
+                )}
+
+                {shipment.status === 'IN_TRANSIT' && (
+                  <button
+                    onClick={() => updateStatus('DELIVERED')}
+                    disabled={updating}
+                    className="w-full bg-emerald-500 text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-emerald-600 transition disabled:opacity-50"
+                  >
+                    <CheckCircle size={18} />
+                    Mark as Delivered
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Cost Summary */}

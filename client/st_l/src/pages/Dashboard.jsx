@@ -103,7 +103,88 @@ const Dashboard = () => {
     );
   }
 
-  // --- 2. ADMIN / AGENT / CLIENT VIEW (Analytics) ---
+  // --- 2. CLIENT VIEW (Simplified) ---
+  if (user?.role === 'CLIENT') {
+    const summary = data?.shipment_summary || {};
+    return (
+      <div className="max-w-6xl mx-auto space-y-6 animate-in fade-in duration-500 p-4">
+        <div className="bg-gradient-to-r from-[#004d40] to-[#00695c] p-8 rounded-[2rem] text-white shadow-xl">
+          <h1 className="text-3xl font-bold">Welcome back, {user.username}</h1>
+          <p className="opacity-90 mt-2">Track your shipments and manage your logistics</p>
+        </div>
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Shipments</p>
+                <p className="text-3xl font-black text-slate-800 mt-2">{summary.total || 0}</p>
+              </div>
+              <img src={PackageIcon} alt="Package" className="w-12 h-12 opacity-20" />
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">In Transit</p>
+                <p className="text-3xl font-black text-amber-600 mt-2">{summary.in_transit || 0}</p>
+              </div>
+              <img src={ClockIcon} alt="Clock" className="w-12 h-12 opacity-20" />
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Delivered</p>
+                <p className="text-3xl font-black text-emerald-600 mt-2">{summary.delivered || 0}</p>
+              </div>
+              <img src={CheckCircleIcon} alt="Delivered" className="w-12 h-12 opacity-20" />
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Link to="/shipments/create" className="bg-[#004d40] p-8 rounded-3xl text-white flex items-center justify-between group hover:bg-[#00332b] transition-all shadow-lg">
+            <div>
+              <h3 className="text-xl font-black">Create New Shipment</h3>
+              <p className="text-white/80 text-sm mt-1">Schedule a new delivery</p>
+            </div>
+            <ChevronRight size={32} className="group-hover:translate-x-2 transition-transform" />
+          </Link>
+
+          <Link to="/shipments" className="bg-white p-8 rounded-3xl border-2 border-slate-200 flex items-center justify-between group hover:border-[#004d40] transition-all">
+            <div>
+              <h3 className="text-xl font-black text-slate-800">View All Shipments</h3>
+              <p className="text-slate-500 text-sm mt-1">Track your deliveries</p>
+            </div>
+            <ChevronRight size={32} className="text-slate-300 group-hover:text-[#004d40] group-hover:translate-x-2 transition-all" />
+          </Link>
+
+          <Link to="/claims/create" className="bg-white p-8 rounded-3xl border-2 border-slate-200 flex items-center justify-between group hover:border-amber-500 transition-all">
+            <div>
+              <h3 className="text-xl font-black text-slate-800">File a Claim</h3>
+              <p className="text-slate-500 text-sm mt-1">Report an issue</p>
+            </div>
+            <AlertTriangle size={32} className="text-slate-300 group-hover:text-amber-500 group-hover:scale-110 transition-all" />
+          </Link>
+
+          <Link to="/invoices" className="bg-white p-8 rounded-3xl border-2 border-slate-200 flex items-center justify-between group hover:border-blue-500 transition-all">
+            <div>
+              <h3 className="text-xl font-black text-slate-800">View Invoices</h3>
+              <p className="text-slate-500 text-sm mt-1">Billing & payments</p>
+            </div>
+            <ChevronRight size={32} className="text-slate-300 group-hover:text-blue-500 group-hover:translate-x-2 transition-all" />
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // --- 3. ADMIN / AGENT VIEW (Analytics) ---
   const summary = data?.shipment_summary || {};
   const statCards = [
     { title: 'Total Shipments', value: summary.total || 0, icon: PackageIcon, color: 'text-blue-600', bg: 'bg-blue-50' },
@@ -117,7 +198,7 @@ const Dashboard = () => {
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
-            {user?.role === 'ADMIN' ? 'Operational Dashboard' : user?.role === 'AGENT' ? 'Agent Console' : 'Client Overview'}
+            {user?.role === 'ADMIN' ? 'Operational Dashboard' : 'Agent Console'}
           </h1>
           <p className="text-slate-500 text-sm">
             Welcome back, <span className="font-semibold text-[#004d40]">{user?.username}</span>

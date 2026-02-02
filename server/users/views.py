@@ -21,6 +21,9 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action == 'create':
             return [permissions.AllowAny()]
+        # Allow agents to view users (for invoice generation, etc.)
+        if self.action in ['list', 'retrieve'] and self.request.user.is_authenticated and self.request.user.role == User.Role.AGENT:
+            return [permissions.IsAuthenticated()]
         return super().get_permissions()
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])

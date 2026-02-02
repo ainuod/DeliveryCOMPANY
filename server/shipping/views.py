@@ -18,8 +18,8 @@ class ShipmentViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
     
     def get_permissions(self):
-        # Allow drivers to view (GET) shipments but not modify them
-        if self.action in ['list', 'retrieve'] and self.request.user.role == User.Role.DRIVER:
+        # Allow drivers to view (GET) and update status (PATCH) of shipments
+        if self.action in ['list', 'retrieve', 'partial_update'] and self.request.user.role == User.Role.DRIVER:
             return [IsAuthenticated()]
         return super().get_permissions()
     

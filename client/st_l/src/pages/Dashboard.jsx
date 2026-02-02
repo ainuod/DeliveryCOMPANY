@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext'; 
-import { Truck, Package, Clock, CheckCircle, AlertTriangle, MapPin, ChevronRight } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { AlertTriangle, MapPin, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import TruckIcon from '../assets/icons/Truck.png';
+import PackageIcon from '../assets/icons/Package.png';
+import ClockIcon from '../assets/icons/Clock.png';
+import CheckCircleIcon from '../assets/icons/CheckCircle.png';
 
 const Dashboard = () => {
-  const { user } = useAuth(); 
+  const { user } = useAuth();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -21,8 +26,8 @@ const Dashboard = () => {
           } else if (user?.role === 'DRIVER') {
             // Driver specific mock data
             setData({
-              active_route: "DZ-ALGIERS-ANNABA-01",
-              current_shipment: { id: 1024, destination: "Annaba Terminal", status: "In Transit" }
+              active_route: "DZ-ALGIERS-ORAN-01",
+              current_shipment: { id: 4, destination: "Oran, Algeria", status: "In Transit" }
             });
           } else {
             setData({
@@ -56,10 +61,10 @@ const Dashboard = () => {
           <div className="relative z-10">
             <h1 className="text-3xl font-bold italic">Hello, {user.username}</h1>
             <p className="opacity-80 mt-2 font-medium flex items-center gap-2">
-              <Truck size={18} /> Route: {data?.active_route}
+              <img src={TruckIcon} alt="Truck" className="w-5 h-5" /> Route: {data?.active_route}
             </p>
           </div>
-          <Truck className="absolute -right-10 -bottom-10 w-64 h-64 opacity-10 rotate-12" />
+          <img src={TruckIcon} alt="Truck" className="absolute -right-10 -bottom-10 w-64 h-64 opacity-10 rotate-12" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -68,10 +73,10 @@ const Dashboard = () => {
             <div>
               <div className="flex justify-between items-center mb-4">
                 <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase">Active Shipment</span>
-                <Package className="text-slate-300" size={24} />
+                <img src={PackageIcon} alt="Package" className="w-8 h-8 opacity-30" />
               </div>
               <h3 className="text-2xl font-black text-slate-800">#{data?.current_shipment?.id}</h3>
-              
+
               <div className="mt-6 space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-slate-50 rounded-lg text-slate-400"><MapPin size={18} /></div>
@@ -79,7 +84,7 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
-            
+
             <Link to={`/shipments/${data?.current_shipment?.id}`} className="mt-8 w-full bg-[#004d40] text-white py-4 rounded-xl font-bold text-center hover:bg-black transition-all flex items-center justify-center gap-2">
               View Cargo Details <ChevronRight size={18} />
             </Link>
@@ -87,11 +92,11 @@ const Dashboard = () => {
 
           {/* Incident Quick Action */}
           <Link to="/incidents" className="bg-red-50 p-8 rounded-3xl border border-red-100 flex flex-col items-center justify-center group hover:bg-red-500 transition-all duration-300">
-             <div className="p-4 bg-white rounded-2xl shadow-sm mb-4 group-hover:scale-110 transition-transform">
-               <AlertTriangle className="text-red-500" size={32} />
-             </div>
-             <h3 className="text-red-700 font-black text-xl group-hover:text-white">Report Incident</h3>
-             <p className="text-red-500/70 text-sm text-center mt-2 group-hover:text-white/80 font-medium">Damage or Delays</p>
+            <div className="p-4 bg-white rounded-2xl shadow-sm mb-4 group-hover:scale-110 transition-transform">
+              <AlertTriangle className="text-red-500" size={32} />
+            </div>
+            <h3 className="text-red-700 font-black text-xl group-hover:text-white">Report Incident</h3>
+            <p className="text-red-500/70 text-sm text-center mt-2 group-hover:text-white/80 font-medium">Damage or Delays</p>
           </Link>
         </div>
       </div>
@@ -101,10 +106,10 @@ const Dashboard = () => {
   // --- 2. ADMIN / AGENT / CLIENT VIEW (Analytics) ---
   const summary = data?.shipment_summary || {};
   const statCards = [
-    { title: 'Total Shipments', value: summary.total || 0, icon: Package, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { title: 'In Progress', value: summary.in_transit || 0, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
-    { title: 'Active Tours', value: data?.kpis?.tours_in_progress || 0, icon: Truck, color: 'text-purple-600', bg: 'bg-purple-50' },
-    { title: 'Delivered', value: summary.delivered || 0, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { title: 'Total Shipments', value: summary.total || 0, icon: PackageIcon, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { title: 'In Progress', value: summary.in_transit || 0, icon: ClockIcon, color: 'text-amber-600', bg: 'bg-amber-50' },
+    { title: 'Active Tours', value: data?.kpis?.tours_in_progress || 0, icon: TruckIcon, color: 'text-purple-600', bg: 'bg-purple-50' },
+    { title: 'Delivered', value: summary.delivered || 0, icon: CheckCircleIcon, color: 'text-emerald-600', bg: 'bg-emerald-50' },
   ];
 
   return (
@@ -123,8 +128,8 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((stat, index) => (
           <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4 hover:shadow-md transition-shadow cursor-default">
-            <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
-              <stat.icon size={24} />
+            <div className={`p-3 rounded-xl ${stat.bg}`}>
+              <img src={stat.icon} alt={stat.title} className="w-8 h-8" />
             </div>
             <div>
               <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">{stat.title}</p>
@@ -137,9 +142,47 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 min-h-75">
           <h3 className="text-lg font-bold text-slate-800 mb-4">Shipment Volume</h3>
-          <div className="h-64 flex items-center justify-center bg-slate-50 border-2 border-dashed border-slate-100 rounded-2xl">
-             <p className="text-slate-400 font-medium">Recharts Visualization Active for {user?.role}</p>
-          </div>
+          <ResponsiveContainer width="100%" height={256}>
+            <AreaChart
+              data={[
+                { name: 'Week 1', pending: summary.pending * 0.7, inTransit: summary.in_transit * 0.6, delivered: summary.delivered * 0.8 },
+                { name: 'Week 2', pending: summary.pending * 0.85, inTransit: summary.in_transit * 0.75, delivered: summary.delivered * 0.85 },
+                { name: 'Week 3', pending: summary.pending * 0.9, inTransit: summary.in_transit * 0.9, delivered: summary.delivered * 0.92 },
+                { name: 'Week 4', pending: summary.pending, inTransit: summary.in_transit, delivered: summary.delivered },
+              ]}
+              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+            >
+              <defs>
+                <linearGradient id="colorDelivered" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#10b981" stopOpacity={0.1} />
+                </linearGradient>
+                <linearGradient id="colorInTransit" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.1} />
+                </linearGradient>
+                <linearGradient id="colorPending" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis dataKey="name" stroke="#94a3b8" style={{ fontSize: '12px', fontWeight: 600 }} />
+              <YAxis stroke="#94a3b8" style={{ fontSize: '12px', fontWeight: 600 }} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: '#fff',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                  fontWeight: 600
+                }}
+              />
+              <Area type="monotone" dataKey="delivered" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorDelivered)" />
+              <Area type="monotone" dataKey="inTransit" stroke="#f59e0b" strokeWidth={2} fillOpacity={1} fill="url(#colorInTransit)" />
+              <Area type="monotone" dataKey="pending" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorPending)" />
+            </AreaChart>
+          </ResponsiveContainer>
         </div>
 
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">

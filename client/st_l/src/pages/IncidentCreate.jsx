@@ -9,7 +9,7 @@ const IncidentCreate = () => {
   const [shipments, setShipments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(null); // State for image preview
-  
+
   const [formData, setFormData] = useState({
     shipment_id: '',
     incident_type: 'PARCEL_DAMAGED',
@@ -19,15 +19,17 @@ const IncidentCreate = () => {
   });
 
   useEffect(() => {
-    // Using mock data for safety, but keeping your API logic ready
-    const mockShipments = [
-      { id: 1024, client: { username: 'Dounia_Logistics' } },
-      { id: 1025, client: { username: 'ST&L_Admin' } }
-    ];
-    setShipments(mockShipments);
-
-    // Uncomment when Django is live:
-    // api.get('/api/shipments/').then(res => setShipments(res.data));
+    // Fetch real shipments from the API
+    api.get('/api/shipments/').then(res => {
+      console.log('Shipments API response:', res.data);
+      // Handle both paginated and non-paginated responses
+      const shipmentData = res.data.results || res.data;
+      setShipments(Array.isArray(shipmentData) ? shipmentData : []);
+    }).catch(err => {
+      console.error('Error fetching shipments:', err);
+      // Fallback to empty array if API fails
+      setShipments([]);
+    });
   }, []);
 
   const handleFileChange = (e) => {
@@ -78,14 +80,14 @@ const IncidentCreate = () => {
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6">
-        
+
         {/* Shipment Selection */}
         <div>
           <label className="block text-sm font-bold text-slate-700 mb-2">Related Shipment</label>
-          <select 
+          <select
             required
             className="w-full p-3 bg-slate-50 rounded-lg border border-slate-200 outline-none focus:border-[#004d40] focus:ring-2 focus:ring-[#004d40]/10 transition"
-            onChange={(e) => setFormData({...formData, shipment_id: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, shipment_id: e.target.value })}
           >
             <option value="">Select Shipment ID...</option>
             {shipments.map(s => (
@@ -97,10 +99,10 @@ const IncidentCreate = () => {
         {/* Incident Type */}
         <div>
           <label className="block text-sm font-bold text-slate-700 mb-2">Type of Incident</label>
-          <select 
+          <select
             className="w-full p-3 bg-slate-50 rounded-lg border border-slate-200 outline-none focus:border-[#004d40] focus:ring-2 focus:ring-[#004d40]/10"
             value={formData.incident_type}
-            onChange={(e) => setFormData({...formData, incident_type: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, incident_type: e.target.value })}
           >
             <option value="PARCEL_DAMAGED">Parcel Damaged</option>
             <option value="DELIVERY_DELAYED">Delivery Delayed</option>
@@ -113,24 +115,24 @@ const IncidentCreate = () => {
         <div className="space-y-6">
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">Current Location</label>
-            <input 
+            <input
               type="text"
               required
               placeholder="e.g. Warehouse A, Paris Terminal"
               className="w-full p-3 bg-slate-50 rounded-lg border border-slate-200 outline-none focus:border-[#004d40] transition"
               value={formData.location}
-              onChange={(e) => setFormData({...formData, location: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
             />
           </div>
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">Description of Events</label>
-            <textarea 
+            <textarea
               rows="4"
               required
               className="w-full p-3 bg-slate-50 rounded-lg border border-slate-200 outline-none focus:border-[#004d40] transition"
               placeholder="Provide specific details about the incident..."
               value={formData.description}
-              onChange={(e) => setFormData({...formData, description: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             ></textarea>
           </div>
         </div>
@@ -138,26 +140,25 @@ const IncidentCreate = () => {
         {/* IMPROVED Photo Upload Area */}
         <div>
           <label className="block text-sm font-bold text-slate-700 mb-2 text-center">Visual Evidence</label>
-          
-          <div 
+
+          <div
             onClick={() => fileInputRef.current.click()} // Click the hidden input
-            className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-xl transition cursor-pointer relative ${
-              preview ? 'border-[#004d40] bg-[#004d40]/5' : 'border-slate-200 hover:border-[#004d40] bg-slate-50'
-            }`}
+            className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-xl transition cursor-pointer relative ${preview ? 'border-[#004d40] bg-[#004d40]/5' : 'border-slate-200 hover:border-[#004d40] bg-slate-50'
+              }`}
           >
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              className="hidden" 
-              onChange={handleFileChange} 
-              accept="image/*" 
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              onChange={handleFileChange}
+              accept="image/*"
             />
-            
+
             <div className="space-y-1 text-center">
               {preview ? (
                 <div className="relative">
                   <img src={preview} alt="Incident" className="mx-auto h-32 w-32 object-cover rounded-lg shadow-md" />
-                  <button 
+                  <button
                     onClick={removePhoto}
                     className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition"
                   >
@@ -178,12 +179,12 @@ const IncidentCreate = () => {
           </div>
         </div>
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={loading}
           className="w-full bg-red-600 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-red-700 transition shadow-lg disabled:opacity-50"
         >
-          {loading ? "Processing..." : <><Send size={18}/> Submit Official Incident Report</>}
+          {loading ? "Processing..." : <><Send size={18} /> Submit Official Incident Report</>}
         </button>
       </form>
     </div>

@@ -16,7 +16,7 @@ class IncidentSerializer(serializers.ModelSerializer):
         queryset=Shipment.objects.all(), source='shipment', write_only=True
     )
     reported_by_id = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(), source='reported_by', write_only=True
+        queryset=User.objects.all(), source='reported_by', write_only=True, required=False
     )
     
     
@@ -28,6 +28,7 @@ class IncidentSerializer(serializers.ModelSerializer):
             'date_occurred', 'location', 'photo', 'reported_by',
             'shipment_id', 'reported_by_id'
         ]
+        read_only_fields = ['date_occurred', 'reported_by']
 
 class ClaimSerializer(serializers.ModelSerializer):
    

@@ -17,6 +17,12 @@ class ShipmentViewSet(viewsets.ModelViewSet):
     
     permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
     
+    def get_permissions(self):
+        # Allow drivers to view (GET) shipments but not modify them
+        if self.action in ['list', 'retrieve'] and self.request.user.role == User.Role.DRIVER:
+            return [IsAuthenticated()]
+        return super().get_permissions()
+    
     def get_queryset(self):
        
         user = self.request.user
@@ -24,6 +30,9 @@ class ShipmentViewSet(viewsets.ModelViewSet):
             return Shipment.objects.select_related('client', 'origin', 'destination').prefetch_related('parcels').all()
         elif user.role == User.Role.CLIENT:
             return Shipment.objects.filter(client=user).select_related('origin', 'destination').prefetch_related('parcels')
+        elif user.role == User.Role.DRIVER:
+            # Drivers can view all shipments to report incidents
+            return Shipment.objects.select_related('client', 'origin', 'destination').prefetch_related('parcels').all()
         return Shipment.objects.none() # Block access for others
     serializer_class = ShipmentSerializer
 

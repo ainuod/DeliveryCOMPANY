@@ -28,6 +28,10 @@ class IncidentViewSet(viewsets.ModelViewSet):
              return Incident.objects.filter(reported_by=user).select_related('shipment', 'reported_by')
         return Incident.objects.none()
 
+    def perform_create(self, serializer):
+        from django.utils import timezone
+        serializer.save(reported_by=self.request.user, date_occurred=timezone.now())
+
 class ClaimViewSet(viewsets.ModelViewSet):
     
     serializer_class = ClaimSerializer

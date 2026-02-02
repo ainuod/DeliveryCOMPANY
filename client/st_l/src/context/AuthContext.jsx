@@ -9,51 +9,37 @@ export const AuthProvider = ({ children }) => {
 
   const fetchProfile = async () => {
     try {
-      const token = localStorage.getItem('access_token');
-      if (token === 'fake-debug-token') {
-        // Default recovery for page refresh in debug mode
-        setUser({ username: 'Admin_Debug', role: 'ADMIN' });
-      } else {
-        const response = await api.get('/api/users/me/'); 
-        setUser(response.data);
-      }
+      // api interceptor will automatically add the token
+      const response = await api.get('/api/users/me/');
+      setUser(response.data);
     } catch (err) {
-      localStorage.removeItem('access_token');
-      setUser(null);
+      console.error("Failed to fetch profile:", err);
+      // If unauthorized, maybe token expired or invalid
+      logout();
     } finally {
       setLoading(false);
     }
   };
 
   const login = async (username, password) => {
-    console.log("Debug Mode: Bypassing Backend");
-    
-    // Updated logic to support the new DRIVER role
-    let role = 'CLIENT'; // Default
-    const lowerUser = username.toLowerCase();
+    try {
+      const response = await api.post('/api/token/', { username, password });
+      const { access, refresh } = response.data;
 
-    if (lowerUser.includes('admin')) {
-      role = 'ADMIN';
-    } else if (lowerUser.includes('driver')) {
-      role = 'DRIVER';
-    } else if (lowerUser.includes('agent')) {
-      role = 'AGENT';
+      localStorage.setItem('access_token', access);
+      localStorage.setItem('refresh_token', refresh);
+
+      await fetchProfile();
+      return true;
+    } catch (error) {
+      console.error("Login failed:", error);
+      return false;
     }
-
-    const mockUser = {
-      username: username,
-      role: role,
-      company: role === 'CLIENT' ? 'Dounia Logistics' : 'ST&L Internal'
-    };
-
-    localStorage.setItem('access_token', 'fake-debug-token');
-    setUser(mockUser);
-    
-    return true; 
   };
 
   const logout = () => {
     localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
     setUser(null);
   };
 

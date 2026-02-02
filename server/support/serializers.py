@@ -35,10 +35,6 @@ class ClaimSerializer(serializers.ModelSerializer):
     incident = IncidentSerializer(read_only=True, required=False)
 
    
-    client_id = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.filter(role=User.Role.CLIENT), source='client', write_only=True
-    )
-   
     incident_id = serializers.PrimaryKeyRelatedField(
         queryset=Incident.objects.all(), source='incident', write_only=True, required=False, allow_null=True
     )
@@ -47,5 +43,5 @@ class ClaimSerializer(serializers.ModelSerializer):
         model = Claim
         fields = [
             'id', 'client', 'incident', 'reason', 'description', 'status', 
-            'created_at', 'client_id', 'incident_id'
+            'created_at', 'incident_id'
         ]

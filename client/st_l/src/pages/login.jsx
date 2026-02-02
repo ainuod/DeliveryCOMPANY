@@ -16,7 +16,7 @@ const Login = () => {
       if (success) {
         navigate('/dashboard');
       } else {
-        alert("Invalid credentials. Use your Django Superuser login.");
+        alert("Invalid credentials. Please check your username and password.");
       }
     } catch (err) {
       alert("Cannot connect to server. Did you run 'python manage.py runserver'?");
@@ -33,12 +33,12 @@ const Login = () => {
         </div>
 
         <form onSubmit={handleLogin} className="space-y-4">
-          <input 
+          <input
             type="text" placeholder="Username" required
             className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-[#004d40]"
             value={username} onChange={(e) => setUsername(e.target.value)}
           />
-          <input 
+          <input
             type="password" placeholder="Password" required
             className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-[#004d40]"
             value={password} onChange={(e) => setPassword(e.target.value)}
@@ -47,7 +47,7 @@ const Login = () => {
             Login to ST&L
           </button>
         </form>
-        
+
         <p className="mt-8 text-center text-sm text-slate-500">
           Don't have an account? <Link to="/register" className="text-[#004d40] font-bold hover:underline">Create an Account</Link>
         </p>

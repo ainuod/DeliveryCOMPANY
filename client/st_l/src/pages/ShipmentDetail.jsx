@@ -14,7 +14,7 @@ const ShipmentDetail = () => {
         const response = await api.get(`/api/shipments/${id}/`);
         setShipment(response.data);
       } catch (error) {
-        console.error("Error fetching shipment detail:", error);
+        console.error(`Error fetching shipment detail for ID: ${id}`, error.response?.data || error);
       } finally {
         setLoading(false);
       }
@@ -41,7 +41,7 @@ const ShipmentDetail = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Info Column */}
         <div className="lg:col-span-2 space-y-6">
-          
+
           {/* Route Card */}
           <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center">
             <div className="flex items-start space-x-3">

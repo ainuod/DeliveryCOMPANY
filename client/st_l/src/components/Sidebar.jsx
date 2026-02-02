@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  LayoutDashboard, Package, FileText, AlertTriangle, 
-  ShieldAlert, LogOut, CreditCard, Truck 
+import {
+  LayoutDashboard, Package, FileText, AlertTriangle,
+  ShieldAlert, LogOut, CreditCard, Truck
 } from 'lucide-react';
 import logo from '../assets/logo.png';
 import { useAuth } from '../context/AuthContext';
@@ -55,7 +55,7 @@ const Sidebar = () => {
         {menuGroups.map((group, i) => {
           // Check if this user's role is allowed for any item in the group
           const filteredItems = group.items.filter(item => item.roles.includes(user?.role));
-          
+
           if (filteredItems.length === 0) return null;
 
           return (
@@ -67,11 +67,10 @@ const Sidebar = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center space-x-3 p-3 rounded-xl mb-1 transition-all ${
-                    location.pathname.startsWith(item.path) 
-                      ? 'bg-white text-[#004d40] shadow-lg scale-[1.02]' 
+                  className={`flex items-center space-x-3 p-3 rounded-xl mb-1 transition-all ${location.pathname.startsWith(item.path)
+                      ? 'bg-white text-[#004d40] shadow-lg scale-[1.02]'
                       : 'hover:bg-white/10 text-teal-50'
-                  }`}
+                    }`}
                 >
                   <item.icon size={20} />
                   <span className="font-semibold text-sm">
@@ -88,22 +87,20 @@ const Sidebar = () => {
       {/* User Footer Profile Section */}
       <div className="p-4 bg-[#003d33] border-t border-[#00695c]">
         <div className="flex items-center space-x-3 mb-4 px-2">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white shadow-inner ${
-            user?.role === 'DRIVER' ? 'bg-orange-500' : 'bg-teal-500'
-          }`}>
-            {user?.username?.[0].toUpperCase()}
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white shadow-inner ${user?.role === 'DRIVER' ? 'bg-orange-500' : 'bg-teal-500'
+            }`}>
+            {user?.username?.charAt(0).toUpperCase() || '?'}
           </div>
           <div className="overflow-hidden">
             <p className="text-xs font-bold truncate">{user?.username}</p>
-            <p className={`text-[10px] font-black uppercase tracking-tighter ${
-               user?.role === 'DRIVER' ? 'text-orange-400' : 'text-teal-400'
-            }`}>
+            <p className={`text-[10px] font-black uppercase tracking-tighter ${user?.role === 'DRIVER' ? 'text-orange-400' : 'text-teal-400'
+              }`}>
               {user?.role}
             </p>
           </div>
         </div>
-        <button 
-          onClick={handleLogout} 
+        <button
+          onClick={handleLogout}
           className="flex items-center space-x-3 w-full p-3 text-red-300 hover:bg-red-500/10 rounded-xl transition font-bold text-sm group"
         >
           <LogOut size={18} className="group-hover:-translate-x-1 transition-transform" />

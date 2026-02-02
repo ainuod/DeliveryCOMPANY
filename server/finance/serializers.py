@@ -6,9 +6,12 @@ from shipping.serializers import ShipmentSerializer
 
 class PaymentSerializer(serializers.ModelSerializer):
    
+    invoice_id = serializers.PrimaryKeyRelatedField(read_only=True, source='invoice')
+    client_username = serializers.CharField(source='invoice.client.username', read_only=True)
+    
     class Meta:
         model = Payment
-        fields = ['id', 'amount', 'payment_date', 'payment_method']
+        fields = ['id', 'amount', 'payment_date', 'payment_method', 'invoice_id', 'client_username']
 
 class InvoiceSerializer(serializers.ModelSerializer):
    

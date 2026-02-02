@@ -15,11 +15,24 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/api/register/', formData);
+      // payload structure matches UserSerializer:
+      // { username, password, email, role: 'CLIENT', client_profile: { company_name } }
+      const payload = {
+        ...formData,
+        role: 'CLIENT',
+        client_profile: {
+          company_name: formData.company_name
+        }
+      };
+      // remove flat company_name from root
+      delete payload.company_name;
+
+      await api.post('/api/users/', payload);
       alert("Registration successful! Please login.");
       navigate('/login');
     } catch (err) {
-      alert("Registration failed. Try a different username.");
+      console.error(err);
+      alert("Registration failed. Please check your inputs.");
     }
   };
 
@@ -29,7 +42,7 @@ const Register = () => {
          the card is perfectly white and not "dark/grey" 
       */}
       <div className="bg-white p-10 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-white/10 z-20">
-        
+
         <div className="flex flex-col items-center mb-8 text-center">
           <img src={logo} alt="ST&L" className="w-24 mb-4" />
           <h1 className="text-2xl font-black text-[#004d40]">Create Account</h1>
@@ -37,39 +50,39 @@ const Register = () => {
         </div>
 
         <form onSubmit={handleRegister} className="space-y-4">
-          <input 
-            type="text" 
-            placeholder="Full Name / Username" 
+          <input
+            type="text"
+            placeholder="Full Name / Username"
             required
             className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:ring-2 focus:ring-[#004d40]/20 focus:border-[#004d40] transition-all text-slate-700"
-            onChange={(e) => setFormData({...formData, username: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
           />
 
-          <input 
-            type="email" 
-            placeholder="Email Address" 
+          <input
+            type="email"
+            placeholder="Email Address"
             required
             className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:ring-2 focus:ring-[#004d40]/20 focus:border-[#004d40] transition-all text-slate-700"
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           />
 
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Company Name"
             className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:ring-2 focus:ring-[#004d40]/20 focus:border-[#004d40] transition-all text-slate-700"
-            onChange={(e) => setFormData({...formData, company_name: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
           />
 
-          <input 
-            type="password" 
-            placeholder="Password" 
+          <input
+            type="password"
+            placeholder="Password"
             required
             className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:ring-2 focus:ring-[#004d40]/20 focus:border-[#004d40] transition-all text-slate-700"
-            onChange={(e) => setFormData({...formData, password: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           />
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="w-full bg-[#004d40] text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-[#004d40]/30 hover:bg-[#00332b] transform transition active:scale-[0.98] mt-2"
           >
             Register to ST&L

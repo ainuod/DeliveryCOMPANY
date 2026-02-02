@@ -175,7 +175,7 @@ const ShipmentDetail = () => {
               </div>
               <div className="flex justify-between text-xl font-bold pt-4 border-t border-white/20 mt-4">
                 <span>Total Cost</span>
-                <span>${shipment.total_cost}</span>
+                <span>{shipment.total_cost} DZD</span>
               </div>
             </div>
           </div>

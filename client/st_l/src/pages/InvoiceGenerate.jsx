@@ -134,8 +134,8 @@ const InvoiceGenerate = () => {
                       key={s.id}
                       onClick={() => toggleShipment(s.id)}
                       className={`p-4 rounded-xl border cursor-pointer flex justify-between items-center transition-all ${selectedShipmentIds.includes(s.id)
-                          ? 'border-[#004d40] bg-teal-50'
-                          : 'border-slate-100 hover:border-[#004d40]/30'
+                        ? 'border-[#004d40] bg-teal-50'
+                        : 'border-slate-100 hover:border-[#004d40]/30'
                         }`}
                     >
                       <div className="flex items-center gap-4">
@@ -149,7 +149,7 @@ const InvoiceGenerate = () => {
                           <p className="text-xs text-slate-500">{s.origin.city} → {s.destination.city}</p>
                         </div>
                       </div>
-                      <p className="font-bold text-slate-800">${s.total_cost}</p>
+                      <p className="font-bold text-slate-800">{s.total_cost} DZD</p>
                     </div>
                   ))
                 )}
@@ -162,7 +162,7 @@ const InvoiceGenerate = () => {
             <div className="pt-6 border-t border-slate-100 flex justify-between items-center animate-in fade-in slide-in-from-bottom-4">
               <div>
                 <p className="text-sm text-slate-500">Total Invoice Amount</p>
-                <p className="text-3xl font-black text-[#004d40]">${calculateTotal().toFixed(2)}</p>
+                <p className="text-3xl font-black text-[#004d40]">{calculateTotal().toFixed(2)} DZD</p>
               </div>
               <button
                 onClick={handleSubmit}

@@ -8,7 +8,7 @@
   align-items: center;
   justify-content: center;
   /* Use the exact filename you want here */
-  background-image: url('./assets/awsqwq_20.jpg'); 
+  background-image: url('./assets/awsqwq_20.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -19,12 +19,18 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4); /* 40% dark tint */
+  background: rgba(0, 0, 0, 0.4);
+  /* 40% dark tint */
   z-index: 1;
 }
 
 .login-card {
   position: relative;
-  z-index: 10; /* Ensures card is above the dark tint */
-  @apply w-full max-w-md bg-white rounded-3xl shadow-2xl p-10 border border-slate-200;
+  z-index: 10;
+  /* Ensures card is above the dark tint */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  @apply w-full max-w-md rounded-[2.5rem] shadow-2xl p-10;
 }

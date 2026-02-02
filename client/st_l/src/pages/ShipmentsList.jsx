@@ -119,7 +119,7 @@ const ShipmentsList = () => {
                     {shipment.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 font-semibold text-slate-700">${shipment.total_cost}</td>
+                <td className="px-6 py-4 font-semibold text-slate-700">{shipment.total_cost} DZD</td>
                 <td className="px-6 py-4 text-right">
                   <Link
                     to={`/shipments/${shipment.id}`}

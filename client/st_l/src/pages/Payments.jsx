@@ -47,7 +47,7 @@ const Payments = () => {
                 <td className="p-4 font-medium text-slate-700">#{pay.id}</td>
                 <td className="p-4 text-slate-600">Invoice #{pay.invoice_id}</td>
                 <td className="p-4 text-slate-600">{pay.client_username}</td>
-                <td className="p-4 font-bold text-slate-800">${pay.amount}</td>
+                <td className="p-4 font-bold text-slate-800">{pay.amount} DZD</td>
                 <td className="p-4">
                   <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
                     {pay.payment_method}

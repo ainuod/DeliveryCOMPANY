@@ -51,7 +51,7 @@ const InvoiceDetail = () => {
             <Download size={18} /> Print PDF
           </button>
           {invoice.status !== 'PAID' && (
-            <button 
+            <button
               onClick={() => setShowPaymentModal(true)}
               className="bg-[#004d40] text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-[#00332b]"
             >
@@ -79,9 +79,9 @@ const InvoiceDetail = () => {
                   <tr key={s.id}>
                     <td className="px-6 py-4 font-bold text-[#004d40]">#{s.id}</td>
                     <td className="px-6 py-4 text-slate-600">
-                        {s.origin?.city} → {s.destination?.city}
+                      {s.origin?.city} → {s.destination?.city}
                     </td>
-                    <td className="px-6 py-4 text-right font-medium">${s.total_cost}</td>
+                    <td className="px-6 py-4 text-right font-medium">{s.total_cost} DZD</td>
                   </tr>
                 ))}
               </tbody>
@@ -100,7 +100,7 @@ const InvoiceDetail = () => {
                       Payment Received ({p.payment_method.replace('_', ' ')})
                     </td>
                     <td className="px-6 py-4 text-slate-500">{new Date(p.payment_date).toLocaleDateString()}</td>
-                    <td className="px-6 py-4 text-right font-bold text-emerald-700">+ ${p.amount}</td>
+                    <td className="px-6 py-4 text-right font-bold text-emerald-700">+ {p.amount} DZD</td>
                   </tr>
                 ))}
               </tbody>
@@ -114,20 +114,19 @@ const InvoiceDetail = () => {
           <div className="space-y-3">
             <div className="flex justify-between text-slate-500 text-sm">
               <span>Subtotal (HT)</span>
-              <span>${invoice.montant_ht}</span>
+              <span>{invoice.montant_ht} DZD</span>
             </div>
             <div className="flex justify-between text-slate-500 text-sm">
               <span>TVA (Tax)</span>
-              <span>${invoice.montant_tva}</span>
+              <span>{invoice.montant_tva} DZD</span>
             </div>
             <div className="pt-3 border-t flex justify-between font-bold text-lg text-slate-800">
               <span>Total (TTC)</span>
-              <span>${invoice.montant_ttc}</span>
+              <span>{invoice.montant_ttc} DZD</span>
             </div>
           </div>
-          <div className={`p-4 rounded-lg text-center font-bold ${
-            invoice.status === 'PAID' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-50 text-red-600'
-          }`}>
+          <div className={`p-4 rounded-lg text-center font-bold ${invoice.status === 'PAID' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-50 text-red-600'
+            }`}>
             Status: {invoice.status}
           </div>
         </div>
@@ -140,21 +139,21 @@ const InvoiceDetail = () => {
             <h2 className="text-xl font-bold mb-4 text-slate-800">Record a Payment</h2>
             <form onSubmit={handlePayment} className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-400 uppercase">Amount Received ($)</label>
-                <input 
+                <label className="text-xs font-bold text-slate-400 uppercase">Amount Received (DZD)</label>
+                <input
                   type="number" step="0.01" required
                   className="w-full p-3 bg-slate-50 rounded-lg border focus:border-[#004d40] outline-none"
                   value={paymentData.amount}
-                  onChange={(e) => setPaymentData({...paymentData, amount: e.target.value})}
+                  onChange={(e) => setPaymentData({ ...paymentData, amount: e.target.value })}
                   placeholder="e.g. 150.00"
                 />
               </div>
               <div>
                 <label className="text-xs font-bold text-slate-400 uppercase">Payment Method</label>
-                <select 
+                <select
                   className="w-full p-3 bg-slate-50 rounded-lg border focus:border-[#004d40] outline-none"
                   value={paymentData.payment_method}
-                  onChange={(e) => setPaymentData({...paymentData, payment_method: e.target.value})}
+                  onChange={(e) => setPaymentData({ ...paymentData, payment_method: e.target.value })}
                 >
                   <option value="BANK_TRANSFER">Bank Transfer</option>
                   <option value="CREDIT_CARD">Credit Card</option>
